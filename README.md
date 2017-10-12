@@ -6,7 +6,6 @@
 
 ### 实验要求：
 1. 在[实验](https://github.com/framywhale/CA-Project02_Stage01)[一](https://github.com/Lingrui98/CA_P2_S1)的基础上，增加16条指令：ADD、ADDI、SUB、SUBU、SLTU、AND、ANDI、NOR、ORI、XOR、XORI、SLLV、SRA、SRAV、SRL、SRLV
-2. 实现MIPS架构的延迟槽技术，延迟槽不再设定为NOP指令，可能是任意指令
 3. 考虑数据相关
 4. 数据相关的解决：
    * 直接阻塞流水
