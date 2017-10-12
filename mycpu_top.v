@@ -2,31 +2,31 @@
   ------------------------------------------------------------------------------
   --------------------------------------------------------------------------------
   Copyright (c) 2016, Loongson Technology Corporation Limited.
-    
+
   All rights reserved.
-    
+
   Redistribution and use in source and binary forms, with or without modification,
   are permitted provided that the following conditions are met:
-    
-  1. Redistributions of source code must retain the above copyright notice, this 
+
+  1. Redistributions of source code must retain the above copyright notice, this
   list of conditions and the following disclaimer.
-    
-  2. Redistributions in binary form must reproduce the above copyright notice, 
+
+  2. Redistributions in binary form must reproduce the above copyright notice,
   this list of conditions and the following disclaimer in the documentation and/or
   other materials provided with the distribution.
-    
-  3. Neither the name of Loongson Technology Corporation Limited nor the names of 
-  its contributors may be used to endorse or promote products derived from this 
+
+  3. Neither the name of Loongson Technology Corporation Limited nor the names of
+  its contributors may be used to endorse or promote products derived from this
   software without specific prior written permission.
-    
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
-  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
   DISCLAIMED. IN NO EVENT SHALL LOONGSON TECHNOLOGY CORPORATION LIMITED BE LIABLE
-  TO ANY PARTY FOR DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
-  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE 
-  GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
-  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+  TO ANY PARTY FOR DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+  GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
   LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
   THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   --------------------------------------------------------------------------------
@@ -44,12 +44,12 @@ module mycpu_top(
     output wire [31:0] inst_sram_addr,
     output wire [31:0] inst_sram_wdata,
     input  wire [31:0] inst_sram_rdata,
-    
+
     output wire        data_sram_en,
     output wire [ 3:0] data_sram_wen,
     output wire [31:0] data_sram_addr,
     output wire [31:0] data_sram_wdata,
-    input  wire [31:0] data_sram_rdata 
+    input  wire [31:0] data_sram_rdata
 
   `ifdef SIMU_DEBUG
    ,output wire [31:0] debug_wb_pc,
@@ -74,15 +74,15 @@ wire [ 4:0] RegRaddr2;
 wire [31:0] RegRdata1;
 wire [31:0] RegRdata2;
 
-wire [31:0] PC_next;
-wire [31:0] PC_IF_ID;
+wire [31:0] PC_next       ;
+wire [31:0] PC_IF_ID      ;
 wire [31:0] PC_add_4_IF_ID;
-wire [31:0] Inst_IF_ID;
+wire [31:0] Inst_IF_ID    ;
 
-wire [31:0] J_target_ID;
-wire [31:0] JR_target_ID;
-wire [31:0] Br_target_ID;
-wire [31:0] PC_add_4_ID;
+wire [31:0] J_target_ID   ;
+wire [31:0] JR_target_ID  ;
+wire [31:0] Br_target_ID  ;
+wire [31:0] PC_add_4_ID   ;
 
 wire [31:0] PC_ID_EXE        ;
 wire [31:0] PC_add_4_ID_EXE  ;
@@ -149,7 +149,7 @@ nextpc_gen nextpc_gen(
     .JR_target         (     JR_target_ID),
     .J_target          (      J_target_ID),
     .Br_addr           (     Br_target_ID),
-    .PC_next           (          PC_next) 
+    .PC_next           (          PC_next)
   );
 
 
@@ -162,7 +162,7 @@ fetch_stage fe_stage(
     .inst_sram_rdata   (  inst_sram_rdata),
     .PC_IF_ID          (         PC_IF_ID),
     .PC_add_4_IF_ID    (   PC_add_4_IF_ID),
-    .Inst_IF_ID        (       Inst_IF_ID) 
+    .Inst_IF_ID        (       Inst_IF_ID)
   );
 
 
@@ -227,7 +227,7 @@ execute_stage exe_stage(
     .RegWaddr_EXE_MEM  ( RegWaddr_EXE_MEM),
     .ALUResult_EXE_MEM (ALUResult_EXE_MEM),
     .MemWdata_EXE_MEM  ( MemWdata_EXE_MEM),
-    .PC_EXE_MEM        (       PC_EXE_MEM) 
+    .PC_EXE_MEM        (       PC_EXE_MEM)
     );
 
 
@@ -252,7 +252,7 @@ memory_stage mem_stage(
     .RegWaddr_MEM_WB   (  RegWaddr_MEM_WB),
     .ALUResult_MEM_WB  ( ALUResult_MEM_WB),
     .PC_MEM_WB         (        PC_MEM_WB),
-    .MemRdata_MEM_WB   (  MemRdata_MEM_WB)  
+    .MemRdata_MEM_WB   (  MemRdata_MEM_WB)
   );
 
 
@@ -267,10 +267,10 @@ writeback_stage wb_stage(
     .RegWdata_WB       (     RegWdata_WB),
     .RegWaddr_WB       (     RegWaddr_WB),
     .RegWrite_WB       (     RegWrite_WB),
-    .PC_WB             (           PC_WB) 
+    .PC_WB             (           PC_WB)
 );
 
-reg_file RegFile( 
+reg_file RegFile(
     .clk               (             clk),
     .rst               (             rst),
     .waddr             (     RegWaddr_WB),
