@@ -53,42 +53,59 @@ wire inst_srlv  = (op == 6'd0) && (func == 6'b000110);
 //////////////////////////////////////////////////////////////////
 //                 Control signal assignment                    //
 //////////////////////////////////////////////////////////////////
-assign MemToReg = ~rst & inst_lw;
-assign JSrc     = ~rst & inst_jr;
-assign MemEn    = ~rst & (inst_sw | inst_lw);
+assign MemToReg   = ~rst & inst_lw;
+assign JSrc       = ~rst & inst_jr;
+assign MemEn      = ~rst & (inst_sw | inst_lw);
 
-assign PCSrc[1] = ~rst & ((inst_bne&(~zero)) | (inst_beq&zero));
-assign PCSrc[0] = ~rst & (inst_jal  | inst_j | inst_jr);
+assign PCSrc[1]   = ~rst & ((inst_bne&(~zero)) | (inst_beq&zero));
+assign PCSrc[0]   = ~rst & (inst_jal    | inst_j     | inst_jr  );
 
-assign ALUSrcA[1] = ~rst & inst_sll;
-assign ALUSrcA[0] = ~rst & inst_jal;
+assign ALUSrcA[1] = ~rst & (inst_sll    | inst_sra   | inst_srl );
+assign ALUSrcA[0] = ~rst & (inst_jal);
 
-assign ALUSrcB[1] = ~rst & inst_jal;
-assign ALUSrcB[0] = ~rst & (inst_lw   | inst_sw    | inst_addiu
-                          | inst_slti | inst_sltiu | inst_lui );
+assign ALUSrcB[1] = ~rst & (inst_jal    | inst_ori   | inst_xori  );
+assign ALUSrcB[0] = ~rst & (inst_lw     | inst_sw    | inst_addiu |
+                            inst_slti   | inst_sltiu | inst_lui   |
+                            inst_addi   | inst_andi  | inst_ori   |
+                            inst_xori   );
 
-assign RegDst[1]  = ~rst & inst_jal;
-assign RegDst[0]  = ~rst & (inst_addu | inst_or | inst_slt | inst_sll);
+assign RegDst[1]  = ~rst & (inst_jal;
+assign RegDst[0]  = ~rst & (inst_addu   | inst_or    | inst_slt   |
+                            inst_sll    | inst_add   | inst_sub   |
+                            inst_subu   | inst_sltu  | inst_and   |
+                            inst_nor    | inst_xor   | inst_sllv  |
+                            inst_sra    | inst_srav  | inst_srl   |
+                            inst_srlv   );
 
-assign RegWrite = {4{~rst & (inst_lw    | inst_addiu | inst_slti | 
-                             inst_sltiu | inst_lui   | inst_addu | 
-                             inst_or    | inst_slt   | inst_sll  | inst_jal)}};
-assign MemWrite = {4{~rst & inst_sw}};	
+assign RegWrite = {4{~rst & (inst_lw    | inst_addiu | inst_slti  |
+                             inst_sltiu | inst_lui   | inst_addu  |
+                             inst_or    | inst_slt   | inst_sll   |
+                             inst_jal   | inst_addi  | inst_andi  |
+                             inst_ori   | inst_xori  | inst_add   |
+                             inst_sub   | inst_subu  | inst_sltu  |
+                             inst_and   | inst_nor   | inst_xor   |
+                             inst_sllv  | inst_sra   | inst_srav  |
+                             inst_srl   | inst_srlv  )}};
+assign MemWrite = {4{~rst & inst_sw}};
 
 // ALUop control signal
-assign ALUop[3] = ~rst & 1'd0;
-assign ALUop[2] = ~rst & (inst_slti | inst_slt | inst_sltiu | inst_sll);
-assign ALUop[1] = ~rst & (inst_lw   | inst_sw  | inst_addiu | inst_slti 
-                       |  inst_slt  | inst_lui | inst_jal   |inst_addu);
-assign ALUop[0] = ~rst & (inst_slti | inst_slt | inst_or    | inst_lui  | inst_sll);
+assign ALUop[3] = ~rst & (inst_xori | inst_subu | inst_nor   |
+                          inst_xor  | inst_sra  | inst_srav  |
+                          inst_srl  | inst_srlv );
 
+assign ALUop[2] = ~rst & (inst_slti | inst_slt  | inst_sltiu |
+                          inst_sll  | inst_sub  | inst_sltu  |
+                          inst_sllv | inst_srl  | inst_srlv  );
 
-always @ (*)
-if (inst_beq & zero) $display("bbbbbbbbbbbbbbbbbB");
-else if(inst_bne & ~zero) $display("nnnnnnnnnnnnnnnnnnnnnnnnn");
+assign ALUop[1] = ~rst & (inst_lw   | inst_sw   | inst_addiu |
+                          inst_slti | inst_slt  | inst_lui   |
+                          inst_jal  | inst_addu | inst_addi  |
+                          inst_xori | inst_add  | inst_sub   |
+                          inst_xor  | inst_sra  | inst_srav  );
+
+assign ALUop[0] = ~rst & (inst_slti | inst_slt  | inst_or    |
+                          inst_lui  | inst_sll  | inst_ori   |
+                          inst_nor  | inst_sllv | inst_sra   |
+                          inst_srav );
 
 endmodule
-
-
-
-
