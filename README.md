@@ -1,4 +1,16 @@
 # Computer Architecture Project2 Stage2
+### 有新的改动：
+* **ALUop** 添加如下：
+  * SUB 1000
+  * NOR 1001
+  * XOR 1010
+  * SRA 1011    // {rs{rt[31]},rt[31:rs]}
+  * SRL 1100    // {rs{0},rt[31:rs]}
+* 数据通路中**增加**：
+  * **ALUSrcB** 添加**11**信号
+  * 含义为： 立即数 Zero-extend， 用到的信号是 ORI 和 XORI
+  * 已在下方的数据通路图中用**红线**标注出来
+
 ### 小组成员
 勾凌睿: [CA_P2_S2_Ling](https://github.com/Lingrui98/CA_P2_S2_Ling)
 
