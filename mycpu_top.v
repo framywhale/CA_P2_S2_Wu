@@ -115,7 +115,7 @@ wire          MemToReg_MEM_WB;
 wire [ 3:0]   RegWrite_MEM_WB;
 wire [ 4:0]   RegWaddr_MEM_WB;
 wire [31:0]  ALUResult_MEM_WB;
-wire [31:0]   MemRdata_MEM_WB;
+//wire [31:0]   MemRdata_MEM_WB;
 wire [31:0]         PC_MEM_WB;
 wire [31:0]             PC_WB;
 wire [31:0]       RegWdata_WB;
@@ -204,7 +204,7 @@ execute_stage exe_stage(
     .RegWrite_ID_EXE   (  RegWrite_ID_EXE), // I  4
     .MemEn_EXE_MEM     (    MemEn_EXE_MEM), // O  1
     .MemToReg_EXE_MEM  ( MemToReg_EXE_MEM), // O  1
-    .MemWrite_EXE_MEM  ( MemToReg_EXE_MEM), // O  4
+    .MemWrite_EXE_MEM  ( MemWrite_EXE_MEM), // O  4
     .RegWrite_EXE_MEM  ( RegWrite_EXE_MEM), // O  4
     .RegWaddr_EXE_MEM  ( RegWaddr_EXE_MEM), // O  5
     .ALUResult_EXE_MEM (ALUResult_EXE_MEM), // O 32
@@ -233,7 +233,7 @@ memory_stage mem_stage(
     .RegWrite_MEM_WB   (  RegWrite_MEM_WB), // O  4
     .RegWaddr_MEM_WB   (  RegWaddr_MEM_WB), // O  5
     .ALUResult_MEM_WB  ( ALUResult_MEM_WB), // O 32
-    .PC_MEM_WB         (        PC_MEM_WB), // O 32
+    .PC_MEM_WB         (        PC_MEM_WB) // O 32
 //    .MemRdata_MEM_WB   (  MemRdata_MEM_WB)  // O 32
   );
 

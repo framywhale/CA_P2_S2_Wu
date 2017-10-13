@@ -82,6 +82,13 @@ assign ALUop[1] = ~rst & (inst_lw   | inst_sw  | inst_addiu | inst_slti
                        |  inst_slt  | inst_lui | inst_jal   |inst_addu);
 assign ALUop[0] = ~rst & (inst_slti | inst_slt | inst_or    | inst_lui  | inst_sll);
 
+
+always @ (*)
+if (inst_beq & zero) $display("bbbbbbbbbbbbbbbbbB");
+else if(inst_bne & ~zero) $display("nnnnnnnnnnnnnnnnnnnnnnnnn");
+
 endmodule
+
+
 
 

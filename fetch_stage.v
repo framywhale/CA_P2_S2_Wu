@@ -2,31 +2,31 @@
   ------------------------------------------------------------------------------
   --------------------------------------------------------------------------------
   Copyright (c) 2016, Loongson Technology Corporation Limited.
-    
+
   All rights reserved.
-    
+
   Redistribution and use in source and binary forms, with or without modification,
   are permitted provided that the following conditions are met:
-    
-  1. Redistributions of source code must retain the above copyright notice, this 
+
+  1. Redistributions of source code must retain the above copyright notice, this
   list of conditions and the following disclaimer.
-    
-  2. Redistributions in binary form must reproduce the above copyright notice, 
+
+  2. Redistributions in binary form must reproduce the above copyright notice,
   this list of conditions and the following disclaimer in the documentation and/or
   other materials provided with the distribution.
-    
-  3. Neither the name of Loongson Technology Corporation Limited nor the names of 
-  its contributors may be used to endorse or promote products derived from this 
+
+  3. Neither the name of Loongson Technology Corporation Limited nor the names of
+  its contributors may be used to endorse or promote products derived from this
   software without specific prior written permission.
-    
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
-  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
   DISCLAIMED. IN NO EVENT SHALL LOONGSON TECHNOLOGY CORPORATION LIMITED BE LIABLE
-  TO ANY PARTY FOR DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
-  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE 
-  GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
-  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+  TO ANY PARTY FOR DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+  GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
   LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
   THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   --------------------------------------------------------------------------------
@@ -40,29 +40,45 @@ module fetch_stage(
     input  wire [31:0] PC_next,
     // interaction with inst_sram
     output wire        inst_sram_en,
-    output wire [31:0] inst_sram_addr,
     input  wire [31:0] inst_sram_rdata,
     // data transfering to ID stage
     output reg  [31:0]       PC_IF_ID,           //fetch_stage pc
     output reg  [31:0] PC_add_4_IF_ID,
-    output wire [31:0]     Inst_IF_ID            //instr code sent from fetch_stage    
+    output reg  [31:0]     Inst_IF_ID            //instr code sent from fetch_stage
   );
-    
+   // reg [31:0] PC_IF, PC_add_4_IF;
+    assign inst_sram_en = ~rst;
+
+    parameter reset_addr = 32'hbfc00000;
     always @ (posedge clk) begin
-        PC_IF_ID       <= PC_next;
+      if(rst) begin
+          PC_IF_ID       <= reset_addr;
+          PC_add_4_IF_ID <= reset_addr+4;
+          Inst_IF_ID     <= 32'd0;
+      end
+      else begin
+          PC_IF_ID       <= PC_next;
+          PC_add_4_IF_ID <= PC_next+4;
+          Inst_IF_ID     <= inst_sram_rdata;
+        end
+    end
+ //   wire [31:0] Inst_IF;
+
+
+/*
+    always @ (posedge clk) begin
+        PC_IF_ID       <= PC_IF;
         PC_add_4_IF_ID <= PC_add_4_IF;
     end
-    
-    assign Inst_IF_ID   = inst_sram_rdata;
-    assign inst_sram_en = ~rst;
-    
+ */
+
     // PC + 4
-    wire [31:0] PC_add_4_IF;
-    Adder PC_ADDER(
-        .A      (    PC_next),
-        .B      (      32'd4),
-        .Result (PC_add_4_IF)
-    );
+  //  wire [31:0] PC_add_4_IF;
+  //  Adder PC_ADDER(
+  //      .A      (    PC_next),
+  //      .B      (      32'd4),
+  //      .Result (PC_add_4_IF)
+  //  );
 
 endmodule //fetch_stage
 
