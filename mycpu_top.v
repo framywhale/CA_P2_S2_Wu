@@ -2,31 +2,31 @@
   ------------------------------------------------------------------------------
   --------------------------------------------------------------------------------
   Copyright (c) 2016, Loongson Technology Corporation Limited.
-
+    
   All rights reserved.
-
+    
   Redistribution and use in source and binary forms, with or without modification,
   are permitted provided that the following conditions are met:
-
-  1. Redistributions of source code must retain the above copyright notice, this
+    
+  1. Redistributions of source code must retain the above copyright notice, this 
   list of conditions and the following disclaimer.
-
-  2. Redistributions in binary form must reproduce the above copyright notice,
+    
+  2. Redistributions in binary form must reproduce the above copyright notice, 
   this list of conditions and the following disclaimer in the documentation and/or
   other materials provided with the distribution.
-
-  3. Neither the name of Loongson Technology Corporation Limited nor the names of
-  its contributors may be used to endorse or promote products derived from this
+    
+  3. Neither the name of Loongson Technology Corporation Limited nor the names of 
+  its contributors may be used to endorse or promote products derived from this 
   software without specific prior written permission.
-
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
   DISCLAIMED. IN NO EVENT SHALL LOONGSON TECHNOLOGY CORPORATION LIMITED BE LIABLE
-  TO ANY PARTY FOR DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
-  GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  TO ANY PARTY FOR DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE 
+  GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
+  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
   LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
   THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   --------------------------------------------------------------------------------
@@ -44,12 +44,12 @@ module mycpu_top(
     output wire [31:0] inst_sram_addr,
     output wire [31:0] inst_sram_wdata,
     input  wire [31:0] inst_sram_rdata,
-
+    
     output wire        data_sram_en,
     output wire [ 3:0] data_sram_wen,
     output wire [31:0] data_sram_addr,
     output wire [31:0] data_sram_wdata,
-    input  wire [31:0] data_sram_rdata
+    input  wire [31:0] data_sram_rdata 
 
   `ifdef SIMU_DEBUG
    ,output wire [31:0] debug_wb_pc,
@@ -66,7 +66,7 @@ assign inst_sram_wdata = 32'b0;
 wire   rst;
 assign rst = ~resetn;
 
-wire JSrc;
+wire         JSrc;
 wire [ 1:0] PCSrc;
 
 wire [ 4:0] RegRaddr1;
@@ -74,212 +74,195 @@ wire [ 4:0] RegRaddr2;
 wire [31:0] RegRdata1;
 wire [31:0] RegRdata2;
 
-wire [31:0] PC_next       ;
-wire [31:0] PC_IF_ID      ;
-wire [31:0] PC_add_4_IF_ID;
-wire [31:0] Inst_IF_ID    ;
+wire [31:0]           PC_next;
+wire [31:0]          PC_IF_ID;
+wire [31:0]    PC_add_4_IF_ID;
+wire [31:0]        Inst_IF_ID;
 
-wire [31:0] J_target_ID   ;
-wire [31:0] JR_target_ID  ;
-wire [31:0] Br_target_ID  ;
-wire [31:0] PC_add_4_ID   ;
+wire [31:0]       J_target_ID;
+wire [31:0]      JR_target_ID;
+wire [31:0]      Br_target_ID;
+wire [31:0]       PC_add_4_ID;
 
-wire [31:0] PC_ID_EXE        ;
-wire [31:0] PC_add_4_ID_EXE  ;
-wire [ 1:0] RegDst_ID_EXE    ;
-wire [ 1:0] ALUSrcA_ID_EXE   ;
-wire [ 1:0] ALUSrcB_ID_EXE   ;
-wire [ 3:0] ALUop_ID_EXE     ;
-wire [ 3:0] RegWrite_ID_EXE  ;
-wire [ 3:0] MemWrite_ID_EXE  ;
-wire        MemEn_ID_EXE     ;
-wire        MemToReg_ID_EXE  ;
-wire [ 4:0] Rt_ID_EXE        ;
-wire [ 4:0] Rd_ID_EXE        ;
-wire [31:0] PC_add_4_ID_EXE  ;
-wire [31:0] PC_ID_EXE        ;
-wire [31:0] RegRdata1_ID_EXE ;
-wire [31:0] RegRdata2_ID_EXE ;
-wire [31:0] Sa_ID_EXE        ;
-wire [31:0] SgnExtend_ID_EXE ;
+wire [31:0]         PC_ID_EXE;
+wire [31:0]   PC_add_4_ID_EXE;
+wire [ 1:0]     RegDst_ID_EXE;
+wire [ 1:0]    ALUSrcA_ID_EXE;
+wire [ 1:0]    ALUSrcB_ID_EXE;
+wire [ 3:0]      ALUop_ID_EXE;
+wire [ 3:0]   RegWrite_ID_EXE;
+wire [ 3:0]   MemWrite_ID_EXE;
+wire             MemEn_ID_EXE;
+wire          MemToReg_ID_EXE;
+wire [ 4:0]         Rt_ID_EXE;
+wire [ 4:0]         Rd_ID_EXE;
 
-wire [31:0] PC_add_4_ID_EXE  ;
-wire [31:0] PC_ID_EXE        ;
-wire [31:0] RegRdata1_ID_EXE ;
-wire [31:0] RegRdata2_ID_EXE ;
-wire [31:0] Sa_ID_EXE        ;
-wire [31:0] SgnExtend_ID_EXE ;
-wire [31:0] Rt_ID_EXE        ;
-wire [31:0] Rd_ID_EXE        ;
+wire [31:0]  RegRdata1_ID_EXE;
+wire [31:0]  RegRdata2_ID_EXE;
+wire [31:0]         Sa_ID_EXE;
+wire [31:0]  SgnExtend_ID_EXE;
 
-wire        MemEn_ID_EXE     ;
-wire        MemToReg_ID_EXE  ;
-wire [ 1:0] RegDst_ID_EXE    ;
-wire [ 1:0] ALUSrcA_ID_EXE   ;
-wire [ 1:0] ALUSrcB_ID_EXE   ;
-wire [ 3:0] ALUop_ID_EXE     ;
-wire [ 3:0] MemWrite_ID_EXE  ;
-wire [ 3:0] RegWrite_ID_EXE  ;
-
-wire        MemEn_EXE_MEM    ;
-wire        MemToReg_EXE_MEM ;
-wire [ 3:0] MemWrite_EXE_MEM ;
-wire [ 3:0] RegWrite_EXE_MEM ;
-wire [ 4:0] RegWaddr_EXE_MEM ;
+wire            MemEn_EXE_MEM;
+wire         MemToReg_EXE_MEM;
+wire [ 3:0]  MemWrite_EXE_MEM;
+wire [ 3:0]  RegWrite_EXE_MEM;
+wire [ 4:0]  RegWaddr_EXE_MEM;
 wire [31:0] ALUResult_EXE_MEM;
-wire [31:0] MemWdata_EXE_MEM ;
-wire [31:0] PC_EXE_MEM       ;
+wire [31:0]  MemWdata_EXE_MEM;
+wire [31:0]        PC_EXE_MEM;
 
-wire        MemToReg_MEM_WB  ;
-wire [ 3:0] RegWrite_MEM_WB  ;
-wire [ 4:0] RegWaddr_MEM_WB  ;
-wire [31:0] ALUResult_MEM_WB ;
-wire [31:0] PC_MEM_WB        ;
-wire [31:0] RegWdata_WB      ;
-wire [ 4:0] RegWaddr_WB      ;
-wire [ 3:0] RegWrite_WB      ;
-wire [31:0] PC_WB            ;
+wire          MemToReg_MEM_WB;
+wire [ 3:0]   RegWrite_MEM_WB;
+wire [ 4:0]   RegWaddr_MEM_WB;
+wire [31:0]  ALUResult_MEM_WB;
+wire [31:0]   MemRdata_MEM_WB;
+wire [31:0]         PC_MEM_WB;
+wire [31:0]             PC_WB;
+wire [31:0]       RegWdata_WB;
+wire [ 4:0]       RegWaddr_WB;
+wire [ 3:0]       RegWrite_WB;
 
 
 nextpc_gen nextpc_gen(
-    .rst               (              rst),
-    .JSrc              (             JSrc),
-    .PCSrc             (            PCSrc),
-    .PC                (      PC_add_4_ID),
-    .JR_target         (     JR_target_ID),
-    .J_target          (      J_target_ID),
-    .Br_addr           (     Br_target_ID),
-    .PC_next           (          PC_next)
+    .rst               (              rst), // I  1
+    .JSrc              (             JSrc), // I  1
+    .PCSrc             (            PCSrc), // I  2
+    .PC                (      PC_add_4_ID), // I 32
+    .JR_target         (     JR_target_ID), // I 32
+    .J_target          (      J_target_ID), // I 32
+    .Br_addr           (     Br_target_ID), // I 32
+    .PC_next           (          PC_next)  // O 32
   );
 
 
 fetch_stage fe_stage(
-    .clk               (              clk),
-    .rst               (              rst),
-    .PC_next           (          PC_next),
-    .inst_sram_en      (     inst_sram_en),
-    .inst_sram_addr    (   inst_sram_addr),
-    .inst_sram_rdata   (  inst_sram_rdata),
-    .PC_IF_ID          (         PC_IF_ID),
-    .PC_add_4_IF_ID    (   PC_add_4_IF_ID),
-    .Inst_IF_ID        (       Inst_IF_ID)
+    .clk               (              clk), // I  1
+    .rst               (              rst), // I  1
+    .PC_next           (          PC_next), // I 32
+    .inst_sram_en      (     inst_sram_en), // O  1
+    .inst_sram_addr    (   inst_sram_addr), // O 32
+    .inst_sram_rdata   (  inst_sram_rdata), // I 32
+    .PC_IF_ID          (         PC_IF_ID), // O 32
+    .PC_add_4_IF_ID    (   PC_add_4_IF_ID), // O 32
+    .Inst_IF_ID        (       Inst_IF_ID)  // O 32
   );
 
 
 decode_stage de_stage(
-    .clk               (              clk),
-    .rst               (              rst),
-    .Inst_IF_ID        (       Inst_IF_ID),
-    .PC_IF_ID          (         PC_IF_ID),
-    .PC_add_4_IF_ID    (   PC_add_4_IF_ID),
-    .RegRaddr1_ID      (        RegRaddr1),
-    .RegRaddr2_ID      (        RegRaddr2),
-    .RegRdata1_ID      (        RegRdata1),
-    .RegRdata2_ID      (        RegRdata2),
-    .JSrc              (             JSrc),
-    .PCSrc             (            PCSrc),
-    .J_target_ID       (      J_target_ID),
-    .JR_target_ID      (     JR_target_ID),
-    .Br_target_ID      (     Br_target_ID),
-    .PC_add_4_ID       (      PC_add_4_ID),
-    .RegDst_ID_EXE     (    RegDst_ID_EXE),
-    .ALUSrcA_ID_EXE    (   ALUSrcA_ID_EXE),
-    .ALUSrcB_ID_EXE    (   ALUSrcB_ID_EXE),
-    .ALUop_ID_EXE      (     ALUop_ID_EXE),
-    .RegWrite_ID_EXE   (  RegWrite_ID_EXE),
-    .MemWrite_ID_EXE   (  MemWrite_ID_EXE),
-    .MemEn_ID_EXE      (     MemEn_ID_EXE),
-    .MemToReg_ID_EXE   (  MemToReg_ID_EXE),
-    .Rt_ID_EXE         (        Rt_ID_EXE),
-    .Rd_ID_EXE         (        Rd_ID_EXE),
-    .PC_add_4_ID_EXE   (  PC_add_4_ID_EXE),
-    .PC_ID_EXE         (        PC_ID_EXE),
-    .RegRdata1_ID_EXE  ( RegRdata1_ID_EXE),
-    .RegRdata2_ID_EXE  ( RegRdata2_ID_EXE),
-    .Sa_ID_EXE         (        Sa_ID_EXE),
-    .SgnExtend_ID_EXE  ( SgnExtend_ID_EXE)
+    .clk               (              clk), // I  1
+    .rst               (              rst), // I  1
+    .Inst_IF_ID        (       Inst_IF_ID), // I 32
+    .PC_IF_ID          (         PC_IF_ID), // I 32
+    .PC_add_4_IF_ID    (   PC_add_4_IF_ID), // I 32
+    .RegRaddr1_ID      (        RegRaddr1), // O  5
+    .RegRaddr2_ID      (        RegRaddr2), // O  5
+    .RegRdata1_ID      (        RegRdata1), // I 32
+    .RegRdata2_ID      (        RegRdata2), // I 32
+    .JSrc              (             JSrc), // O  1
+    .PCSrc             (            PCSrc), // O  2
+    .J_target_ID       (      J_target_ID), // O 32
+    .JR_target_ID      (     JR_target_ID), // O 32
+    .Br_target_ID      (     Br_target_ID), // O 32
+    .PC_add_4_ID       (      PC_add_4_ID), // O 32
+    .RegDst_ID_EXE     (    RegDst_ID_EXE), // O  2
+    .ALUSrcA_ID_EXE    (   ALUSrcA_ID_EXE), // O  2
+    .ALUSrcB_ID_EXE    (   ALUSrcB_ID_EXE), // O  2
+    .ALUop_ID_EXE      (     ALUop_ID_EXE), // O  4
+    .RegWrite_ID_EXE   (  RegWrite_ID_EXE), // O  4
+    .MemWrite_ID_EXE   (  MemWrite_ID_EXE), // O  4
+    .MemEn_ID_EXE      (     MemEn_ID_EXE), // O  1
+    .MemToReg_ID_EXE   (  MemToReg_ID_EXE), // O  1
+    .Rt_ID_EXE         (        Rt_ID_EXE), // O  5
+    .Rd_ID_EXE         (        Rd_ID_EXE), // O  5
+    .PC_add_4_ID_EXE   (  PC_add_4_ID_EXE), // O 32
+    .PC_ID_EXE         (        PC_ID_EXE), // O 32
+    .RegRdata1_ID_EXE  ( RegRdata1_ID_EXE), // O 32
+    .RegRdata2_ID_EXE  ( RegRdata2_ID_EXE), // O 32
+    .Sa_ID_EXE         (        Sa_ID_EXE), // O 32
+    .SgnExtend_ID_EXE  ( SgnExtend_ID_EXE)  // O 32
   );
 
 
 execute_stage exe_stage(
-    .clk               (              clk),
-    .rst               (              rst),
-    .PC_add_4_ID_EXE   (  PC_add_4_ID_EXE),
-    .PC_ID_EXE         (        PC_ID_EXE),
-    .RegRdata1_ID_EXE  ( RegRdata1_ID_EXE),
-    .RegRdata2_ID_EXE  ( RegRdata2_ID_EXE),
-    .Sa_ID_EXE         (        Sa_ID_EXE),
-    .SgnExtend_ID_EXE  ( SgnExtend_ID_EXE),
-    .Rt_ID_EXE         (        Rt_ID_EXE),
-    .Rd_ID_EXE         (        Rd_ID_EXE),
-    .MemEn_ID_EXE      (     MemEn_ID_EXE),
-    .MemToReg_ID_EXE   (  MemToReg_ID_EXE),
-    .RegDst_ID_EXE     (    RegDst_ID_EXE),
-    .ALUSrcA_ID_EXE    (   ALUSrcA_ID_EXE),
-    .ALUSrcB_ID_EXE    (   ALUSrcB_ID_EXE),
-    .ALUop_ID_EXE      (     ALUop_ID_EXE),
-    .MemWrite_ID_EXE   (  MemWrite_ID_EXE),
-    .RegWrite_ID_EXE   (  RegWrite_ID_EXE),
-    .MemEn_EXE_MEM     (    MemEn_EXE_MEM),
-    .MemToReg_EXE_MEM  ( MemToReg_EXE_MEM),
-    .MemWrite_EXE_MEM  ( MemToReg_EXE_MEM),
-    .RegWrite_EXE_MEM  ( RegWrite_EXE_MEM),
-    .RegWaddr_EXE_MEM  ( RegWaddr_EXE_MEM),
-    .ALUResult_EXE_MEM (ALUResult_EXE_MEM),
-    .MemWdata_EXE_MEM  ( MemWdata_EXE_MEM),
-    .PC_EXE_MEM        (       PC_EXE_MEM)
+    .clk               (              clk), // I  1
+    .rst               (              rst), // I  1
+    .PC_add_4_ID_EXE   (  PC_add_4_ID_EXE), // I 32
+    .PC_ID_EXE         (        PC_ID_EXE), // I 32
+    .RegRdata1_ID_EXE  ( RegRdata1_ID_EXE), // I 32
+    .RegRdata2_ID_EXE  ( RegRdata2_ID_EXE), // I 32
+    .Sa_ID_EXE         (        Sa_ID_EXE), // I 32
+    .SgnExtend_ID_EXE  ( SgnExtend_ID_EXE), // I 32
+    .Rt_ID_EXE         (        Rt_ID_EXE), // I  5
+    .Rd_ID_EXE         (        Rd_ID_EXE), // I  5
+    .MemEn_ID_EXE      (     MemEn_ID_EXE), // I  1
+    .MemToReg_ID_EXE   (  MemToReg_ID_EXE), // I  1
+    .RegDst_ID_EXE     (    RegDst_ID_EXE), // I  2
+    .ALUSrcA_ID_EXE    (   ALUSrcA_ID_EXE), // I  2
+    .ALUSrcB_ID_EXE    (   ALUSrcB_ID_EXE), // I  2
+    .ALUop_ID_EXE      (     ALUop_ID_EXE), // I  4
+    .MemWrite_ID_EXE   (  MemWrite_ID_EXE), // I  4
+    .RegWrite_ID_EXE   (  RegWrite_ID_EXE), // I  4
+    .MemEn_EXE_MEM     (    MemEn_EXE_MEM), // O  1
+    .MemToReg_EXE_MEM  ( MemToReg_EXE_MEM), // O  1
+    .MemWrite_EXE_MEM  ( MemToReg_EXE_MEM), // O  4
+    .RegWrite_EXE_MEM  ( RegWrite_EXE_MEM), // O  4
+    .RegWaddr_EXE_MEM  ( RegWaddr_EXE_MEM), // O  5
+    .ALUResult_EXE_MEM (ALUResult_EXE_MEM), // O 32
+    .MemWdata_EXE_MEM  ( MemWdata_EXE_MEM), // O 32
+    .PC_EXE_MEM        (       PC_EXE_MEM)  // O 32
     );
 
 
 memory_stage mem_stage(
-    .clk               (              clk),
-    .rst               (              rst),
-    .MemEn_EXE_MEM     (    MemEn_EXE_MEM),
-    .MemToReg_EXE_MEM  ( MemToReg_EXE_MEM),
-    .MemWrite_EXE_MEM  ( MemWrite_EXE_MEM),
-    .RegWrite_EXE_MEM  ( RegWrite_EXE_MEM),
-    .RegWaddr_EXE_MEM  ( RegWaddr_EXE_MEM),
-    .ALUResult_EXE_MEM (ALUResult_EXE_MEM),
-    .MemWdata_EXE_MEM  ( MemWdata_EXE_MEM),
-    .PC_EXE_MEM        (       PC_EXE_MEM),
-    .MemEn_MEM         (     data_sram_en),
-    .MemWrite_MEM      (    data_sram_wen),
-    .data_sram_addr    (   data_sram_addr),
-    .data_sram_rdata   (  data_sram_rdata),
-    .MemWdata_MEM      (  data_sram_wdata),
-    .MemToReg_MEM_WB   (  MemToReg_MEM_WB),
-    .RegWrite_MEM_WB   (  RegWrite_MEM_WB),
-    .RegWaddr_MEM_WB   (  RegWaddr_MEM_WB),
-    .ALUResult_MEM_WB  ( ALUResult_MEM_WB),
-    .PC_MEM_WB         (        PC_MEM_WB),
-    .MemRdata_MEM_WB   (  MemRdata_MEM_WB)
+    .clk               (              clk), // I  1
+    .rst               (              rst), // I  1
+    .MemEn_EXE_MEM     (    MemEn_EXE_MEM), // I  1
+    .MemToReg_EXE_MEM  ( MemToReg_EXE_MEM), // I  1
+    .MemWrite_EXE_MEM  ( MemWrite_EXE_MEM), // I  4
+    .RegWrite_EXE_MEM  ( RegWrite_EXE_MEM), // I  4
+    .RegWaddr_EXE_MEM  ( RegWaddr_EXE_MEM), // I  5
+    .ALUResult_EXE_MEM (ALUResult_EXE_MEM), // I 32
+    .MemWdata_EXE_MEM  ( MemWdata_EXE_MEM), // I 32
+    .PC_EXE_MEM        (       PC_EXE_MEM), // I 32
+    .MemEn_MEM         (     data_sram_en), // O  1
+    .MemWrite_MEM      (    data_sram_wen), // O  4
+    .data_sram_addr    (   data_sram_addr), // O 32
+//    .data_sram_rdata   (  data_sram_rdata), // I 32
+    .MemWdata_MEM      (  data_sram_wdata), // O 32
+    .MemToReg_MEM_WB   (  MemToReg_MEM_WB), // O  1
+    .RegWrite_MEM_WB   (  RegWrite_MEM_WB), // O  4
+    .RegWaddr_MEM_WB   (  RegWaddr_MEM_WB), // O  5
+    .ALUResult_MEM_WB  ( ALUResult_MEM_WB), // O 32
+    .PC_MEM_WB         (        PC_MEM_WB), // O 32
+//    .MemRdata_MEM_WB   (  MemRdata_MEM_WB)  // O 32
   );
 
 
 writeback_stage wb_stage(
-    .clk               (             clk),
-    .rst               (             rst),
-    .MemToReg_MEM_WB   ( MemToReg_MEM_WB),
-    .RegWrite_MEM_WB   ( RegWrite_MEM_WB),
-    .RegWaddr_MEM_WB   ( RegWaddr_MEM_WB),
-    .ALUResult_MEM_WB  (ALUResult_MEM_WB),
-    .PC_MEM_WB         (       PC_MEM_WB),
-    .RegWdata_WB       (     RegWdata_WB),
-    .RegWaddr_WB       (     RegWaddr_WB),
-    .RegWrite_WB       (     RegWrite_WB),
-    .PC_WB             (           PC_WB)
+    .clk               (              clk), // I  1
+    .rst               (              rst), // I  1
+    .MemToReg_MEM_WB   (  MemToReg_MEM_WB), // I  1
+    .RegWrite_MEM_WB   (  RegWrite_MEM_WB), // I  4
+    .RegWaddr_MEM_WB   (  RegWaddr_MEM_WB), // I  5
+    .ALUResult_MEM_WB  ( ALUResult_MEM_WB), // I 32
+    .MemRdata_MEM_WB   (  data_sram_rdata), // I 32
+    .PC_MEM_WB         (        PC_MEM_WB), // I 32
+    .RegWdata_WB       (      RegWdata_WB), // O 32
+    .RegWaddr_WB       (      RegWaddr_WB), // O  5
+    .RegWrite_WB       (      RegWrite_WB), // O  4
+    .PC_WB             (            PC_WB)  // O 32
 );
 
-reg_file RegFile(
-    .clk               (             clk),
-    .rst               (             rst),
-    .waddr             (     RegWaddr_WB),
-    .raddr1            (       RegRaddr1),
-    .raddr2            (       RegRaddr2),
-    .wen               (     RegWrite_WB),
-    .wdata             (     RegWdata_WB),
-    .rdata1            (       RegRdata1),
-    .rdata2            (       RegRdata2)
+reg_file RegFile( 
+    .clk               (              clk), // I  1
+    .rst               (              rst), // I  1
+    .waddr             (      RegWaddr_WB), // I  5
+    .raddr1            (        RegRaddr1), // I  5
+    .raddr2            (        RegRaddr2), // I  5
+    .wen               (      RegWrite_WB), // I  4
+    .wdata             (      RegWdata_WB), // I 32
+    .rdata1            (        RegRdata1), // O 32
+    .rdata2            (        RegRdata2)  // O 32
 );
 
 `ifdef SIMU_DEBUG

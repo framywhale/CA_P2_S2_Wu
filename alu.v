@@ -22,7 +22,7 @@ module ALU(
         ADD          = 4'b0010,
         LF_16        = 4'b0011,
         UNSIGNED_SLT = 4'b0100,
-        SLL          = 4'b0101;
+        SLL          = 4'b0101,
         SUB          = 4'b0110,
         SIGNED_SLT   = 4'b0111;
 

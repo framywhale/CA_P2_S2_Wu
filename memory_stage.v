@@ -51,7 +51,7 @@ module memory_stage(
     output wire                 MemEn_MEM,
     output wire  [ 3:0]      MemWrite_MEM,
     output wire  [ 4:0]    data_sram_addr,
-    input  wire  [31:0]   data_sram_rdata,
+//    input  wire  [31:0]   data_sram_rdata,
     // output control signals to WB stage
     output reg            MemToReg_MEM_WB,
     output reg   [ 3:0]   RegWrite_MEM_WB,
@@ -59,7 +59,7 @@ module memory_stage(
     output reg   [ 4:0]   RegWaddr_MEM_WB,   
     output reg   [31:0]  ALUResult_MEM_WB,
     output reg   [31:0]         PC_MEM_WB,
-    output wire  [31:0]   MemRdata_MEM_WB
+//    output wire  [31:0]   MemRdata_MEM_WB
   );
     // interaction of signals and data with data_sram
     assign MemEn_MEM      =     MemEn_EXE_MEM;
@@ -76,6 +76,6 @@ module memory_stage(
         ALUResult_MEM_WB <= ALUResult_EXE_MEM;
     end
 
-    assign MemRdata_MEM_WB  = data_sram_rdata;   
+//    assign MemRdata_MEM_WB  = data_sram_rdata;   
   
 endmodule //memory_stage

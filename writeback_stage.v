@@ -43,23 +43,20 @@ module writeback_stage(
     input wire  [ 4:0]   RegWaddr_MEM_WB,
     input wire  [31:0]  ALUResult_MEM_WB,
     input wire  [31:0]         PC_MEM_WB,
-    input wire  [31:0]   MemRdata_MEM_WB
+    input wire  [31:0]   MemRdata_MEM_WB,
     // data that will be used to write back to Register files
     // or be used as debug signals
-    output wire [ 4:0]   RegWdata_WB,
-    output wire [31:0]   RegWaddr_WB,
-    output wire [31:0]         PC_WB
+    output wire [ 4:0]       RegWdata_WB,
+    output wire [31:0]       RegWaddr_WB,
+    output wire [31:0]       RegWrite_WB,
+    output wire [31:0]             PC_WB
 );
     wire        MemToReg_WB;
-    wire [ 3:0] RegWrite_WB;
-    wire [ 4:0] RegWaddr_WB;
-    wire [31:0] RegWdata_WB;
 
     assign       PC_WB =       PC_MEM_WB;
     assign RegWaddr_WB = RegWaddr_MEM_WB;
     assign MemToReg_WB = MemToReg_MEM_WB;
-    assign RegWdata_WB = RegWaddr_MEM_WB;
 
-    assign RegWdata_WB = MemToReg_WB ? MemRdata_MEM_WB : RegWdata_WB;
+    assign RegWdata_WB = MemToReg_WB ? MemRdata_MEM_WB : ALUResult_MEM_WB;
 
 endmodule //writeback_stage
