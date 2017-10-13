@@ -34,8 +34,8 @@
 | SLT   | R-Type | 101010 |   1111   |   01   |   0000   |    0     |    00   |   01   |  00 |  0  |  0111 |
 | SLL   | R-Type | 000000 |   1111   |   01   |   0000   |    0     |    10   |   01   |  00 |  0  |  0101 |
 | JR    | R-Type | 001000 |   0000   |   00   |   0000   |    0     |    00   |   00   |  00 |  1  |   /   |
-| Stage2|
-| Inst  | Opcode |  Func  | RegWrite | RegDst | MemWrite | MemToReg | ALUSrcA | ALUSrcB|PCSrc|JSrc | ALUOp |
+| **Stage2** |
+| **Inst**  | **Opcode** |  **Func**  | **RegWrite** | **RegDst** | **MemWrite** | **MemToReg** | **ALUSrcA** | **ALUSrcB**|**PCSrc**|**JSrc** | **ALUOp** |
 | ADDI  | 001000 |    X   |   1111   |   00   |   0000   |    0     |    00   |   01   |  00 |  0  |  0010 |
 | ANDI  | 001100 |    X   |   1111   |   00   |   0000   |    0     |    00   |   01   |  00 |  0  |  0000 |
 | ORI   | 001101 |    X   |   1111   |   00   |   0000   |    0     |    00   |   11   |  00 |  0  |  0001 |
