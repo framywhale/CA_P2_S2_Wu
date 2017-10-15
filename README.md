@@ -8,8 +8,9 @@
   * SRL 1100    // {rs{0},rt[31:rs]}
 * 数据通路中**增加**：
   * **ALUSrcB** 添加**11**信号
-  * 含义为： 立即数 Zero-extend， 用到的信号是 ORI 和 XORI
+  * 含义为： 立即数 Zero-extend， 用到的信号是 ORI 、 XORI 和 ANDI
   * 已在下方的数据通路图中用**红线**标注出来
+* ALU中SLL功能，由**B<<A[4:0]**，调整为**B<<A**
 
 ### 小组成员
 勾凌睿: [CA_P2_S2_Ling](https://github.com/Lingrui98/CA_P2_S2_Ling)
