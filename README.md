@@ -24,7 +24,7 @@
    * 直接阻塞流水
    * 添加旁路技术
 
-### 阶段二 32位五级流水的MPIS处理器数据通路图：
+### （阶段二） 32位五级流水的MPIS处理器数据通路图：
 
 ![Datapath_version2.0](https://github.com/framywhale/CA_P2_S2_Wu/blob/master/Datapath_version2.0.PNG)
 
