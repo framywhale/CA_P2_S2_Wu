@@ -13,7 +13,7 @@
 * ALU中SLL功能，由**B<<A[4:0]**，调整为**B<<A**
 
 ### 小组成员
-勾凌睿: [CA_P2_S2_Ling](https://github.com/Lingrui98/CA_P2_S2_Ling)
+勾凌睿: [CA_P2_S2](https://github.com/Lingrui98/CA_P2_S2)
 
 吴嘉皓: [CA_P2_S2_Wu](https://github.com/framywhale/CA_P2_S2_Wu)
 
