@@ -2,31 +2,31 @@
   ------------------------------------------------------------------------------
   --------------------------------------------------------------------------------
   Copyright (c) 2016, Loongson Technology Corporation Limited.
-
+    
   All rights reserved.
-
+    
   Redistribution and use in source and binary forms, with or without modification,
   are permitted provided that the following conditions are met:
-
-  1. Redistributions of source code must retain the above copyright notice, this
+    
+  1. Redistributions of source code must retain the above copyright notice, this 
   list of conditions and the following disclaimer.
-
-  2. Redistributions in binary form must reproduce the above copyright notice,
+    
+  2. Redistributions in binary form must reproduce the above copyright notice, 
   this list of conditions and the following disclaimer in the documentation and/or
   other materials provided with the distribution.
-
-  3. Neither the name of Loongson Technology Corporation Limited nor the names of
-  its contributors may be used to endorse or promote products derived from this
+    
+  3. Neither the name of Loongson Technology Corporation Limited nor the names of 
+  its contributors may be used to endorse or promote products derived from this 
   software without specific prior written permission.
-
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
   DISCLAIMED. IN NO EVENT SHALL LOONGSON TECHNOLOGY CORPORATION LIMITED BE LIABLE
-  TO ANY PARTY FOR DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
-  GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  TO ANY PARTY FOR DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE 
+  GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
+  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
   LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
   THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   --------------------------------------------------------------------------------
@@ -40,12 +40,12 @@ module decode_stage(
     input  wire [31:0]       Inst_IF_ID,
     input  wire [31:0]         PC_IF_ID,
     input  wire [31:0]   PC_add_4_IF_ID,
-    // interaction with the Register files
+    // interaction with the Register files 
     output wire [ 4:0]     RegRaddr1_ID,
     output wire [ 4:0]     RegRaddr2_ID,
     input  wire [31:0]     RegRdata1_ID,
     input  wire [31:0]     RegRdata2_ID,
-    // control signals passing to
+    // control signals passing to 
     // PC caculate module
     output wire                    JSrc,
     output wire [ 1:0]            PCSrc,
@@ -60,7 +60,7 @@ module decode_stage(
     output reg  [ 1:0]   ALUSrcB_ID_EXE,
     output reg  [ 3:0]     ALUop_ID_EXE,
     output reg  [ 3:0]  RegWrite_ID_EXE,
-    output reg  [ 3:0]  MemWrite_ID_EXE,
+    output reg  [ 3:0]  MemWrite_ID_EXE,  
     output reg             MemEn_ID_EXE,
     output reg          MemToReg_ID_EXE,
     // data transfering to EXE stage
@@ -78,7 +78,7 @@ module decode_stage(
 // reg  [31:0] de_inst;        //instr code @decode stage
 // `endif
     wire                 Zero_ID;
-    wire             MemToReg_ID;
+    wire             MemToReg_ID; 
     wire                 JSrc_ID;
     wire [ 1:0]         MemEn_ID;
     wire [ 1:0]       ALUSrcA_ID;
@@ -115,7 +115,7 @@ module decode_stage(
     assign  J_target_ID = {{PC_IF_ID[31:28]},{Inst_IF_ID[25:0]},{2'b00}};
     assign JR_target_ID =   RegRdata1_ID;
     assign        PC_ID = PC_add_4_IF_ID;
-
+    
     Adder Branch_addr_Adder(
         .A         (      PC_add_4_ID),
         .B         ( SgnExtend_LF2_ID),
@@ -135,13 +135,13 @@ module decode_stage(
         // data transfering to EXE stage
         Rt_ID_EXE        <= rt;
         Rd_ID_EXE        <= rd;
-        Sa_ID_EXE        <=          Sa_ID;
-        PC_ID_EXE        <=       PC_IF_ID;
-        PC_add_4_ID_EXE  <= PC_add_4_IF_ID;
+        Sa_ID_EXE        <=          Sa_ID; 
+        PC_ID_EXE        <=       PC_IF_ID;   
+        PC_add_4_ID_EXE  <= PC_add_4_IF_ID;        
         RegRdata1_ID_EXE <=   RegRdata1_ID;
-        RegRdata2_ID_EXE <=   RegRdata2_ID;
+        RegRdata2_ID_EXE <=   RegRdata2_ID;      
         SgnExtend_ID_EXE <=   SgnExtend_ID;
-    end
+    end 
 
     Zero_Cal Branch_Determination(
         .A         (     RegRdata1_ID),

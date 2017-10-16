@@ -124,14 +124,16 @@ wire [ 3:0]       RegWrite_WB;
 
 
 nextpc_gen nextpc_gen(
-    .rst               (              rst), // I  1
-    .JSrc              (             JSrc), // I  1
-    .PCSrc             (            PCSrc), // I  2
-    .PC                (      PC_add_4_ID), // I 32
-    .JR_target         (     JR_target_ID), // I 32
-    .J_target          (      J_target_ID), // I 32
-    .Br_addr           (     Br_target_ID), // I 32
-    .PC_next           (          PC_next)  // O 32
+    .clk               (               clk), // I  1
+    .rst               (               rst), // I  1
+    .JSrc              (              JSrc), // I  1
+    .PCSrc             (             PCSrc), // I  2
+//    .inst_addr         (          PC_next), // I 32
+    .JR_target         (      JR_target_ID), // I 32
+    .J_target          (       J_target_ID), // I 32
+    .Br_addr           (      Br_target_ID), // I 32
+    .inst_sram_addr    (    inst_sram_addr),  // O 32
+    .PC_next           (           PC_next)
   );
 
 
@@ -140,7 +142,7 @@ fetch_stage fe_stage(
     .rst               (              rst), // I  1
     .PC_next           (          PC_next), // I 32
     .inst_sram_en      (     inst_sram_en), // O  1
-    .inst_sram_addr    (   inst_sram_addr), // O 32
+//    .inst_sram_addr    (   inst_sram_addr), // O 32
     .inst_sram_rdata   (  inst_sram_rdata), // I 32
     .PC_IF_ID          (         PC_IF_ID), // O 32
     .PC_add_4_IF_ID    (   PC_add_4_IF_ID), // O 32
@@ -163,7 +165,7 @@ decode_stage de_stage(
     .J_target_ID       (      J_target_ID), // O 32
     .JR_target_ID      (     JR_target_ID), // O 32
     .Br_target_ID      (     Br_target_ID), // O 32
-    .PC_add_4_ID       (      PC_add_4_ID), // O 32
+//    .PC_add_4_ID       (      PC_add_4_ID), // O 32
     .RegDst_ID_EXE     (    RegDst_ID_EXE), // O  2
     .ALUSrcA_ID_EXE    (   ALUSrcA_ID_EXE), // O  2
     .ALUSrcB_ID_EXE    (   ALUSrcB_ID_EXE), // O  2
