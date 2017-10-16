@@ -1,13 +1,13 @@
 `define DATA_WIDTH 32
 
 module ALU(
-    input [`DATA_WIDTH - 1:0] A,
-    input [`DATA_WIDTH - 1:0] B,
-    input [3:0] ALUop,
-    output reg Overflow,
-    output reg CarryOut,
-    output reg Zero,
-    output reg [`DATA_WIDTH - 1:0] Result
+    input  wire [`DATA_WIDTH - 1:0] A,
+    input  wire [`DATA_WIDTH - 1:0] B,
+    input  wire [              3:0] ALUop,
+    output reg                      Overflow,
+    output reg                      CarryOut,
+    output reg                      Zero,
+    output reg  [`DATA_WIDTH - 1:0] Result
     );
 
     parameter [3:0]
@@ -219,7 +219,7 @@ module ALU(
 
 
 
-    SIGNED_SLT :begin                                              //signed
+    SIGNED_SLT :begin
                 CarryOut = 0;
                 Zero = 0;
                 Overflow = 0;
@@ -254,7 +254,7 @@ module ALU(
                 {Overflow,CarryOut,Zero,C,d,t,z,BF,temp,D,T} = 'd0;
                 end
 
-    SLL    :    begin // sll
+    SLL    :    begin
                 Result = B << (A[4:0]);
                 {Overflow,CarryOut,Zero,C,d,t,z,BF,temp,D,T} = 'd0;
                 end
