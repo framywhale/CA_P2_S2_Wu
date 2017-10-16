@@ -24,7 +24,11 @@ module ALU(
         UNSIGNED_SLT = 4'b0100,
         SLL          = 4'b0101,
         SUB          = 4'b0110,
-        SIGNED_SLT   = 4'b0111;
+        SIGNED_SLT   = 4'b0111,
+        NOR          = 4'b1001,
+        XOR          = 4'b1010,
+        SRA          = 4'b1011,
+        SRL          = 4'b1100;
 
     reg [`DATA_WIDTH - 1:0] C, d, t, BF, z;
     reg [7:0] D, T; 
@@ -260,6 +264,22 @@ module ALU(
                 Result = B << (A[4:0]);
                 {Overflow,CarryOut,Zero,C,d,t,z,BF,temp,D,T} = 'd0;
                 end         
+    NOR    :    begin
+                Result = ~(A | B);
+                {Overflow,CarryOut,Zero,C,d,t,z,BF,temp,D,T} = 'd0;
+                end 
+    NOR    :    begin
+                Result = A ^ B;
+                {Overflow,CarryOut,Zero,C,d,t,z,BF,temp,D,T} = 'd0;
+                end    
+    SRA    :    begin
+                Result = B >>> A;
+                {Overflow,CarryOut,Zero,C,d,t,z,BF,temp,D,T} = 'd0;
+                end  
+    SRL    :    begin
+                Result = B >> A;
+                {Overflow,CarryOut,Zero,C,d,t,z,BF,temp,D,T} = 'd0;
+                end
     default :   begin      
                 Zero = 1;
                 {Overflow,CarryOut,Zero,C,d,t,z,BF,temp,D,T,Result} = 'd0;                       
