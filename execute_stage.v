@@ -43,6 +43,7 @@ module execute_stage(
     input  wire [31:0]  RegRdata2_ID_EXE,
     input  wire [31:0]         Sa_ID_EXE,
     input  wire [31:0]  SgnExtend_ID_EXE,
+    input  wire [31:0]    ZExtend_ID_EXE,
     input  wire [ 4:0]         Rt_ID_EXE,
     input  wire [ 4:0]         Rd_ID_EXE,
     // control signals passing from ID stage
@@ -95,7 +96,7 @@ module execute_stage(
         .Src1   (RegRdata2_ID_EXE),
         .Src2   (SgnExtend_ID_EXE),
         .Src3   (           32'd4),
-        .Src4   (           32'd0),
+        .Src4   (  ZExtend_ID_EXE),
         .op     (  ALUSrcB_ID_EXE),
         .Result (            ALUB)
     );

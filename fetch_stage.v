@@ -46,10 +46,10 @@ module fetch_stage(
     output reg  [31:0] PC_add_4_IF_ID,
     output reg  [31:0]     Inst_IF_ID            //instr code sent from fetch_stage
   );
-   // reg [31:0] PC_IF, PC_add_4_IF;
+    parameter reset_addr = 32'hbfc00000;
+
     assign inst_sram_en = ~rst;
 
-    parameter reset_addr = 32'hbfc00000;
     always @ (posedge clk) begin
       if(rst) begin
           PC_IF_ID       <= reset_addr;
@@ -62,24 +62,6 @@ module fetch_stage(
           Inst_IF_ID     <= inst_sram_rdata;
         end
     end
- //   wire [31:0] Inst_IF;
-
-
-/*
-    always @ (posedge clk) begin
-        PC_IF_ID       <= PC_IF;
-        PC_add_4_IF_ID <= PC_add_4_IF;
-    end
- */
-
-    // PC + 4
-  //  wire [31:0] PC_add_4_IF;
-  //  Adder PC_ADDER(
-  //      .A      (    PC_next),
-  //      .B      (      32'd4),
-  //      .Result (PC_add_4_IF)
-  //  );
-
 endmodule //fetch_stage
 
 module Adder(

@@ -53,7 +53,6 @@ module decode_stage(
     output wire [31:0]      J_target_ID,
     output wire [31:0]     JR_target_ID,
     output wire [31:0]     Br_target_ID,
-//    output wire [31:0]      PC_add_4_ID,
     // control signals passing to EXE stage
     output reg  [ 1:0]    RegDst_ID_EXE,
     output reg  [ 1:0]   ALUSrcA_ID_EXE,
@@ -71,7 +70,8 @@ module decode_stage(
     output reg  [31:0] RegRdata1_ID_EXE,
     output reg  [31:0] RegRdata2_ID_EXE,
     output reg  [31:0]        Sa_ID_EXE,
-    output reg  [31:0] SgnExtend_ID_EXE
+    output reg  [31:0] SgnExtend_ID_EXE,
+    output reg  [31:0]   ZExtend_ID_EXE
   );
 
 // `ifndef SIMU_DEBUG
@@ -89,6 +89,7 @@ module decode_stage(
     wire [ 3:0]      MemWrite_ID;
     wire [ 3:0]      RegWrite_ID;
     wire [31:0]     SgnExtend_ID;
+    wire [31:0]       ZExtend_ID;
     wire [31:0] SgnExtend_LF2_ID;
     wire [31:0]      PC_add_4_ID;
     wire [31:0]            Sa_ID;
@@ -105,6 +106,7 @@ module decode_stage(
     assign RegRaddr2_ID = Inst_IF_ID[20:16];
     // datapath
     assign SgnExtend_ID     = {{16{Inst_IF_ID[15]}},Inst_IF_ID[15:0]};
+    assign   ZExtend_ID     = {{16'd0},Inst_IF_ID[15:0]};
     assign Sa_ID            = {{27{1'b0}}, Inst_IF_ID[10: 6]};
     assign SgnExtend_LF2_ID = SgnExtend_ID << 2;
     // signals passing to PC calculate module
@@ -141,6 +143,7 @@ module decode_stage(
         RegRdata1_ID_EXE <=   RegRdata1_ID;
         RegRdata2_ID_EXE <=   RegRdata2_ID;
         SgnExtend_ID_EXE <=   SgnExtend_ID;
+          ZExtend_ID_EXE <=     ZExtend_ID;
     end
 
     Zero_Cal Branch_Determination(

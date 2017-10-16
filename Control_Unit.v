@@ -69,7 +69,7 @@ assign ALUSrcB[0] = ~rst & (inst_lw     | inst_sw    | inst_addiu |
                             inst_addi   | inst_andi  | inst_ori   |
                             inst_xori   );
 
-assign RegDst[1]  = ~rst & (inst_jal;
+assign RegDst[1]  = ~rst & (inst_jal);
 assign RegDst[0]  = ~rst & (inst_addu   | inst_or    | inst_slt   |
                             inst_sll    | inst_add   | inst_sub   |
                             inst_subu   | inst_sltu  | inst_and   |

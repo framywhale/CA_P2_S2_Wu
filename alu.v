@@ -1,19 +1,13 @@
-/////////////////////////////////////////////////////////
-//ALUop changed to 4 bits for future extension, adding a zero before each existing case
-
-
 `define DATA_WIDTH 32
 
-`timescale 10ns / 1ns
-
 module ALU(
-    input [`DATA_WIDTH - 1:0] A,
-    input [`DATA_WIDTH - 1:0] B,
-    input [3:0] ALUop,
-    output Overflow,
-    output CarryOut,
-    output Zero,
-    output reg [`DATA_WIDTH - 1:0] Result
+    input  wire [`DATA_WIDTH - 1:0] A,
+    input  wire [`DATA_WIDTH - 1:0] B,
+    input  wire [              3:0] ALUop,
+    output reg                      Overflow,
+    output reg                      CarryOut,
+    output reg                      Zero,
+    output reg  [`DATA_WIDTH - 1:0] Result
     );
 
     parameter [3:0]
@@ -25,13 +19,11 @@ module ALU(
         SLL          = 4'b0101,
         SUB          = 4'b0110,
         SIGNED_SLT   = 4'b0111,
-        SUB_2        = 4'b1000,
         NOR          = 4'b1001,
         XOR          = 4'b1010,
         SRA          = 4'b1011,
         SRL          = 4'b1100;
 
-    reg Overflow, CarryOut, Zero;
     reg [`DATA_WIDTH - 1:0] C, d, t, BF, z;
     reg [7:0] D, T;
     reg temp;
@@ -227,7 +219,7 @@ module ALU(
 
 
 
-    SIGNED_SLT :begin                                              //signed
+    SIGNED_SLT :begin
                 CarryOut = 0;
                 Zero = 0;
                 Overflow = 0;
@@ -262,8 +254,24 @@ module ALU(
                 {Overflow,CarryOut,Zero,C,d,t,z,BF,temp,D,T} = 'd0;
                 end
 
-    SLL    :    begin // sll
+    SLL    :    begin
                 Result = B << (A[4:0]);
+                {Overflow,CarryOut,Zero,C,d,t,z,BF,temp,D,T} = 'd0;
+                end
+    NOR    :    begin
+                Result = ~(A | B);
+                {Overflow,CarryOut,Zero,C,d,t,z,BF,temp,D,T} = 'd0;
+                end
+    XOR    :    begin
+                Result = A ^ B;
+                {Overflow,CarryOut,Zero,C,d,t,z,BF,temp,D,T} = 'd0;
+                end
+    SRA    :    begin
+                Result = B >>> A;
+                {Overflow,CarryOut,Zero,C,d,t,z,BF,temp,D,T} = 'd0;
+                end
+    SRL    :    begin
+                Result = B >> A;
                 {Overflow,CarryOut,Zero,C,d,t,z,BF,temp,D,T} = 'd0;
                 end
     default :   begin
