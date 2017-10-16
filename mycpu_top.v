@@ -2,31 +2,31 @@
   ------------------------------------------------------------------------------
   --------------------------------------------------------------------------------
   Copyright (c) 2016, Loongson Technology Corporation Limited.
-    
+
   All rights reserved.
-    
+
   Redistribution and use in source and binary forms, with or without modification,
   are permitted provided that the following conditions are met:
-    
-  1. Redistributions of source code must retain the above copyright notice, this 
+
+  1. Redistributions of source code must retain the above copyright notice, this
   list of conditions and the following disclaimer.
-    
-  2. Redistributions in binary form must reproduce the above copyright notice, 
+
+  2. Redistributions in binary form must reproduce the above copyright notice,
   this list of conditions and the following disclaimer in the documentation and/or
   other materials provided with the distribution.
-    
-  3. Neither the name of Loongson Technology Corporation Limited nor the names of 
-  its contributors may be used to endorse or promote products derived from this 
+
+  3. Neither the name of Loongson Technology Corporation Limited nor the names of
+  its contributors may be used to endorse or promote products derived from this
   software without specific prior written permission.
-    
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
-  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
   DISCLAIMED. IN NO EVENT SHALL LOONGSON TECHNOLOGY CORPORATION LIMITED BE LIABLE
-  TO ANY PARTY FOR DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
-  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE 
-  GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
-  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+  TO ANY PARTY FOR DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+  GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
   LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
   THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   --------------------------------------------------------------------------------
@@ -44,12 +44,12 @@ module mycpu_top(
     output wire [31:0] inst_sram_addr,
     output wire [31:0] inst_sram_wdata,
     input  wire [31:0] inst_sram_rdata,
-    
+
     output wire        data_sram_en,
     output wire [ 3:0] data_sram_wen,
     output wire [31:0] data_sram_addr,
     output wire [31:0] data_sram_wdata,
-    input  wire [31:0] data_sram_rdata 
+    input  wire [31:0] data_sram_rdata
 
   `ifdef SIMU_DEBUG
    ,output wire [31:0] debug_wb_pc,
@@ -101,6 +101,7 @@ wire [31:0]  RegRdata1_ID_EXE;
 wire [31:0]  RegRdata2_ID_EXE;
 wire [31:0]         Sa_ID_EXE;
 wire [31:0]  SgnExtend_ID_EXE;
+wire [31:0]    ZExtend_ID_EXE;
 
 wire            MemEn_EXE_MEM;
 wire         MemToReg_EXE_MEM;
@@ -142,7 +143,6 @@ fetch_stage fe_stage(
     .rst               (              rst), // I  1
     .PC_next           (          PC_next), // I 32
     .inst_sram_en      (     inst_sram_en), // O  1
-//    .inst_sram_addr    (   inst_sram_addr), // O 32
     .inst_sram_rdata   (  inst_sram_rdata), // I 32
     .PC_IF_ID          (         PC_IF_ID), // O 32
     .PC_add_4_IF_ID    (   PC_add_4_IF_ID), // O 32
@@ -165,7 +165,6 @@ decode_stage de_stage(
     .J_target_ID       (      J_target_ID), // O 32
     .JR_target_ID      (     JR_target_ID), // O 32
     .Br_target_ID      (     Br_target_ID), // O 32
-//    .PC_add_4_ID       (      PC_add_4_ID), // O 32
     .RegDst_ID_EXE     (    RegDst_ID_EXE), // O  2
     .ALUSrcA_ID_EXE    (   ALUSrcA_ID_EXE), // O  2
     .ALUSrcB_ID_EXE    (   ALUSrcB_ID_EXE), // O  2
@@ -181,7 +180,8 @@ decode_stage de_stage(
     .RegRdata1_ID_EXE  ( RegRdata1_ID_EXE), // O 32
     .RegRdata2_ID_EXE  ( RegRdata2_ID_EXE), // O 32
     .Sa_ID_EXE         (        Sa_ID_EXE), // O 32
-    .SgnExtend_ID_EXE  ( SgnExtend_ID_EXE)  // O 32
+    .SgnExtend_ID_EXE  ( SgnExtend_ID_EXE), // O 32
+    .ZExtend_ID_EXE    (   ZExtend_ID_EXE)  // O 32
   );
 
 
@@ -194,6 +194,7 @@ execute_stage exe_stage(
     .RegRdata2_ID_EXE  ( RegRdata2_ID_EXE), // I 32
     .Sa_ID_EXE         (        Sa_ID_EXE), // I 32
     .SgnExtend_ID_EXE  ( SgnExtend_ID_EXE), // I 32
+    .ZExtend_ID_EXE    (   ZExtend_ID_EXE), // I 32
     .Rt_ID_EXE         (        Rt_ID_EXE), // I  5
     .Rd_ID_EXE         (        Rd_ID_EXE), // I  5
     .MemEn_ID_EXE      (     MemEn_ID_EXE), // I  1
@@ -255,7 +256,7 @@ writeback_stage wb_stage(
     .PC_WB             (            PC_WB)  // O 32
 );
 
-reg_file RegFile( 
+reg_file RegFile(
     .clk               (              clk), // I  1
     .rst               (              rst), // I  1
     .waddr             (      RegWaddr_WB), // I  5
