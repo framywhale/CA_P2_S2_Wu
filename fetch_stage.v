@@ -37,6 +37,8 @@ module fetch_stage(
     input  wire        clk,
     input  wire        rst,
     // data passing from the PC calculate module
+    input  wire    IRWrite,
+    // For Stall
     input  wire [31:0] PC_next,
     // interaction with inst_sram
     output wire        inst_sram_en,
@@ -56,11 +58,16 @@ module fetch_stage(
           PC_add_4_IF_ID <= reset_addr+4;
           Inst_IF_ID     <= 32'd0;
       end
-      else begin
+      else if (IRWrite) begin
           PC_IF_ID       <= PC_next;
           PC_add_4_IF_ID <= PC_next+4;
           Inst_IF_ID     <= inst_sram_rdata;
-        end
+      end
+      else begin
+          PC_IF_ID       <= PC_IF_ID;
+          PC_add_4_IF_ID <= PC_add_4_IF_ID;
+          Inst_IF_ID     <= Inst_IF_ID;
+      end
     end
 endmodule //fetch_stage
 

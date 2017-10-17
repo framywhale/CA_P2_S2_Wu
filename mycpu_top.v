@@ -79,10 +79,20 @@ wire [31:0]          PC_IF_ID;
 wire [31:0]    PC_add_4_IF_ID;
 wire [31:0]        Inst_IF_ID;
 
+wire                  PCWrite;
+wire                  IRWrite;
+
 wire [31:0]       J_target_ID;
 wire [31:0]      JR_target_ID;
 wire [31:0]      Br_target_ID;
 wire [31:0]       PC_add_4_ID;
+
+wire [ 1:0]     RegRdata1_src;
+wire [ 1:0]     RegRdata2_src;
+
+wire               is_rs_read;
+wire               is_rt_read;
+wire             ID_EXE_Stall;
 
 wire [31:0]         PC_ID_EXE;
 wire [31:0]   PC_add_4_ID_EXE;
@@ -94,8 +104,11 @@ wire [ 3:0]   RegWrite_ID_EXE;
 wire [ 3:0]   MemWrite_ID_EXE;
 wire             MemEn_ID_EXE;
 wire          MemToReg_ID_EXE;
-wire [ 4:0]         Rt_ID_EXE;
-wire [ 4:0]         Rd_ID_EXE;
+//wire [ 4:0]         Rt_ID_EXE;
+//wire [ 4:0]         Rd_ID_EXE;
+wire [ 4:0]   RegWaddr_ID_EXE;
+wire [31:0]     ALUResult_EXE;
+wire [31:0]     ALUResult_MEM;
 
 wire [31:0]  RegRdata1_ID_EXE;
 wire [31:0]  RegRdata2_ID_EXE;
@@ -127,9 +140,10 @@ wire [ 3:0]       RegWrite_WB;
 nextpc_gen nextpc_gen(
     .clk               (               clk), // I  1
     .rst               (               rst), // I  1
+    .PCWrite           (           PCWrite), // I  1  Stall
     .JSrc              (              JSrc), // I  1
     .PCSrc             (             PCSrc), // I  2
-    .PCWrite           (           PCWrite), // I  1
+//    .inst_addr         (          PC_next), // I 32
     .JR_target         (      JR_target_ID), // I 32
     .J_target          (       J_target_ID), // I 32
     .Br_addr           (      Br_target_ID), // I 32
@@ -141,6 +155,7 @@ nextpc_gen nextpc_gen(
 fetch_stage fe_stage(
     .clk               (              clk), // I  1
     .rst               (              rst), // I  1
+    .IRWrite           (          IRWrite), // I  1
     .PC_next           (          PC_next), // I 32
     .inst_sram_en      (     inst_sram_en), // O  1
     .inst_sram_rdata   (  inst_sram_rdata), // I 32
@@ -160,12 +175,18 @@ decode_stage de_stage(
     .RegRaddr2_ID      (        RegRaddr2), // O  5
     .RegRdata1_ID      (        RegRdata1), // I 32
     .RegRdata2_ID      (        RegRdata2), // I 32
+    .ALUResult_EXE     (    ALUResult_EXE), // I 32 Bypass
+    .ALUResult_MEM     (    ALUResult_MEM), // I 32 Bypass
+    .RegWdata_WB       (      RegWdata_WB), // I 32 Bypass
+    .RegRdata1_src     (    RegRdata1_src), // I  2 Bypass
+    .RegRdata2_src     (    RegRdata2_src), // I  2 Bypass
+    .ID_EXE_Stall      (     ID_EXE_Stall), // I  1 Stall
     .JSrc              (             JSrc), // O  1
     .PCSrc             (            PCSrc), // O  2
     .J_target_ID       (      J_target_ID), // O 32
     .JR_target_ID      (     JR_target_ID), // O 32
     .Br_target_ID      (     Br_target_ID), // O 32
-    .RegDst_ID_EXE     (    RegDst_ID_EXE), // O  2
+//    .RegDst_ID_EXE     (    RegDst_ID_EXE), // O  2
     .ALUSrcA_ID_EXE    (   ALUSrcA_ID_EXE), // O  2
     .ALUSrcB_ID_EXE    (   ALUSrcB_ID_EXE), // O  2
     .ALUop_ID_EXE      (     ALUop_ID_EXE), // O  4
@@ -173,8 +194,9 @@ decode_stage de_stage(
     .MemWrite_ID_EXE   (  MemWrite_ID_EXE), // O  4
     .MemEn_ID_EXE      (     MemEn_ID_EXE), // O  1
     .MemToReg_ID_EXE   (  MemToReg_ID_EXE), // O  1
-    .Rt_ID_EXE         (        Rt_ID_EXE), // O  5
-    .Rd_ID_EXE         (        Rd_ID_EXE), // O  5
+//    .Rt_ID_EXE         (        Rt_ID_EXE), // O  5
+//    .Rd_ID_EXE         (        Rd_ID_EXE), // O  5
+    .RegWaddr_ID_EXE   (  RegWaddr_ID_EXE), // O  5 
     .PC_add_4_ID_EXE   (  PC_add_4_ID_EXE), // O 32
     .PC_ID_EXE         (        PC_ID_EXE), // O 32
     .RegRdata1_ID_EXE  ( RegRdata1_ID_EXE), // O 32
@@ -182,8 +204,9 @@ decode_stage de_stage(
     .Sa_ID_EXE         (        Sa_ID_EXE), // O 32
     .SgnExtend_ID_EXE  ( SgnExtend_ID_EXE), // O 32
     .ZExtend_ID_EXE    (   ZExtend_ID_EXE), // O 32
-    .is_rs_read_ID     (    is_rs_read_ID),
-    .is_rt_read_ID     (    is_rt_read_ID)
+    
+    .is_rs_read_ID     (       is_rs_read),
+    .is_rt_read_ID     (       is_rt_read)
   );
 
 
@@ -197,11 +220,12 @@ execute_stage exe_stage(
     .Sa_ID_EXE         (        Sa_ID_EXE), // I 32
     .SgnExtend_ID_EXE  ( SgnExtend_ID_EXE), // I 32
     .ZExtend_ID_EXE    (   ZExtend_ID_EXE), // I 32
-    .Rt_ID_EXE         (        Rt_ID_EXE), // I  5
-    .Rd_ID_EXE         (        Rd_ID_EXE), // I  5
+//    .Rt_ID_EXE         (        Rt_ID_EXE), // I  5
+//    .Rd_ID_EXE         (        Rd_ID_EXE), // I  5
+    .RegWaddr_ID_EXE   (  RegWaddr_ID_EXE), // I  5
     .MemEn_ID_EXE      (     MemEn_ID_EXE), // I  1
     .MemToReg_ID_EXE   (  MemToReg_ID_EXE), // I  1
-    .RegDst_ID_EXE     (    RegDst_ID_EXE), // I  2
+//    .RegDst_ID_EXE     (    RegDst_ID_EXE), // I  2
     .ALUSrcA_ID_EXE    (   ALUSrcA_ID_EXE), // I  2
     .ALUSrcB_ID_EXE    (   ALUSrcB_ID_EXE), // I  2
     .ALUop_ID_EXE      (     ALUop_ID_EXE), // I  4
@@ -214,7 +238,8 @@ execute_stage exe_stage(
     .RegWaddr_EXE_MEM  ( RegWaddr_EXE_MEM), // O  5
     .ALUResult_EXE_MEM (ALUResult_EXE_MEM), // O 32
     .MemWdata_EXE_MEM  ( MemWdata_EXE_MEM), // O 32
-    .PC_EXE_MEM        (       PC_EXE_MEM)  // O 32
+    .PC_EXE_MEM        (       PC_EXE_MEM), // O 32
+    .ALUResult_EXE     (    ALUResult_EXE)  // O 32
     );
 
 
@@ -238,8 +263,9 @@ memory_stage mem_stage(
     .RegWrite_MEM_WB   (  RegWrite_MEM_WB), // O  4
     .RegWaddr_MEM_WB   (  RegWaddr_MEM_WB), // O  5
     .ALUResult_MEM_WB  ( ALUResult_MEM_WB), // O 32
-    .PC_MEM_WB         (        PC_MEM_WB) // O 32
+    .PC_MEM_WB         (        PC_MEM_WB), // O 32
 //    .MemRdata_MEM_WB   (  MemRdata_MEM_WB)  // O 32
+    .ALUResult_MEM     (    ALUResult_MEM)
   );
 
 
@@ -258,19 +284,7 @@ writeback_stage wb_stage(
     .PC_WB             (            PC_WB)  // O 32
 );
 
-reg_file RegFile(
-    .clk               (              clk), // I  1
-    .rst               (              rst), // I  1
-    .waddr             (      RegWaddr_WB), // I  5
-    .raddr1            (        RegRaddr1), // I  5
-    .raddr2            (        RegRaddr2), // I  5
-    .wen               (      RegWrite_WB), // I  4
-    .wdata             (      RegWdata_WB), // I 32
-    .rdata1            (        RegRdata1), // O 32
-    .rdata2            (        RegRdata2)  // O 32
-);
-
-bypass_unit Bypass_Unit(
+Bypass_Unit bypass_unit(
     .clk                (              clk),
     .rst                (              rst),
     // input IR recognize signals from Control Unit
@@ -288,6 +302,10 @@ bypass_unit Bypass_Unit(
     .rs_ID              (Inst_IF_ID[25:21]),
     .rt_ID              (Inst_IF_ID[20:16]),
     // Reg write data in afterward stage
+    .RegWrite_ID_EXE    (  RegWrite_ID_EXE),
+    .RegWrite_EXE_MEM   ( RegWrite_EXE_MEM),
+    .RegWrite_MEM_WB    (  RegWrite_MEM_WB),
+    
     .ALUResult_EXE      (    ALUResult_EXE),
     .ALUResult_EXE_MEM  (ALUResult_EXE_MEM),
     .RegWdata_WB        (      RegWdata_WB),
@@ -298,6 +316,18 @@ bypass_unit Bypass_Unit(
     // output the real read data in ID stage
     .RegRdata1_src      (    RegRdata1_src),
     .RegRdata2_src      (    RegRdata2_src)
+);
+
+reg_file RegFile(
+    .clk               (              clk), // I  1
+    .rst               (              rst), // I  1
+    .waddr             (      RegWaddr_WB), // I  5
+    .raddr1            (        RegRaddr1), // I  5
+    .raddr2            (        RegRaddr2), // I  5
+    .wen               (      RegWrite_WB), // I  4
+    .wdata             (      RegWdata_WB), // I 32
+    .rdata1            (        RegRdata1), // O 32
+    .rdata2            (        RegRdata2)  // O 32
 );
 
 `ifdef SIMU_DEBUG

@@ -47,6 +47,14 @@ module decode_stage(
     input  wire [31:0]     RegRdata2_ID,
     // control signals passing to
     // PC caculate module
+    input  wire [31:0]     ALUResult_EXE,
+    input  wire [31:0]     ALUResult_MEM,
+    input  wire [31:0]       RegWdata_WB,
+    // regdata passed back
+    input  wire [ 1:0]     RegRdata1_src,
+    input  wire [ 1:0]     RegRdata2_src,
+    input  wire             ID_EXE_Stall,
+    // control signals from bypass module
     output wire                    JSrc,
     output wire [ 1:0]            PCSrc,
     // data passing to PC calculate module
@@ -54,7 +62,6 @@ module decode_stage(
     output wire [31:0]     JR_target_ID,
     output wire [31:0]     Br_target_ID,
     // control signals passing to EXE stage
-    output reg  [ 1:0]    RegDst_ID_EXE,
     output reg  [ 1:0]   ALUSrcA_ID_EXE,
     output reg  [ 1:0]   ALUSrcB_ID_EXE,
     output reg  [ 3:0]     ALUop_ID_EXE,
@@ -62,18 +69,18 @@ module decode_stage(
     output reg  [ 3:0]  MemWrite_ID_EXE,
     output reg             MemEn_ID_EXE,
     output reg          MemToReg_ID_EXE,
-    output wire           is_rs_read_ID,
-    output wire           is_rt_read_ID,
     // data transfering to EXE stage
-    output reg  [ 4:0]        Rt_ID_EXE,
-    output reg  [ 4:0]        Rd_ID_EXE,
+    output reg  [ 4:0]  RegWaddr_ID_EXE,
     output reg  [31:0]  PC_add_4_ID_EXE,
     output reg  [31:0]        PC_ID_EXE,
     output reg  [31:0] RegRdata1_ID_EXE,
     output reg  [31:0] RegRdata2_ID_EXE,
     output reg  [31:0]        Sa_ID_EXE,
     output reg  [31:0] SgnExtend_ID_EXE,
-    output reg  [31:0]   ZExtend_ID_EXE
+    output reg  [31:0]   ZExtend_ID_EXE,
+
+    output wire           is_rs_read_ID,
+    output wire           is_rt_read_ID
   );
 
 // `ifndef SIMU_DEBUG
@@ -96,29 +103,39 @@ module decode_stage(
     wire [31:0]      PC_add_4_ID;
     wire [31:0]            Sa_ID;
     wire [31:0]            PC_ID;
+    wire [ 4:0]      RegWaddr_ID;
+
+    // Bypassed regdata
+    wire [31:0]  RegRdata1_Final_ID;
+    wire [31:0]  RegRdata2_Final_ID;
+
     // temp, intend to remember easily
     wire [ 4:0]       rs,rt,rd,sa;
     assign rs = Inst_IF_ID[25:21];
     assign rt = Inst_IF_ID[20:16];
     assign rd = Inst_IF_ID[15:11];
     assign sa = Inst_IF_ID[10: 6];
+
     // interaction with Register files
     // tell read address to Register files
     assign RegRaddr1_ID = Inst_IF_ID[25:21];
     assign RegRaddr2_ID = Inst_IF_ID[20:16];
+
     // datapath
     assign SgnExtend_ID     = {{16{Inst_IF_ID[15]}},Inst_IF_ID[15:0]};
     assign   ZExtend_ID     = {{16'd0},Inst_IF_ID[15:0]};
     assign Sa_ID            = {{27{1'b0}}, Inst_IF_ID[10: 6]};
     assign SgnExtend_LF2_ID = SgnExtend_ID << 2;
+
     // signals passing to PC calculate module
     assign JSrc  =  JSrc_ID;
     assign PCSrc = PCSrc_ID;
+
     // data passing to PC calculate module
     assign  PC_add_4_ID = PC_add_4_IF_ID;
     assign  J_target_ID = {{PC_IF_ID[31:28]},{Inst_IF_ID[25:0]},{2'b00}};
-    assign JR_target_ID =   RegRdata1_ID;
-    assign        PC_ID = PC_add_4_IF_ID;
+    assign JR_target_ID =   RegRdata1_Final_ID;
+    assign        PC_ID =       PC_add_4_IF_ID;
 
     Adder Branch_addr_Adder(
         .A         (      PC_add_4_ID),
@@ -127,31 +144,36 @@ module decode_stage(
     );
 
     always @(posedge clk) begin
-        // control signals passing to EXE stage
-        MemEn_ID_EXE    <=    MemEn_ID;
-        MemToReg_ID_EXE <= MemToReg_ID;
-        ALUop_ID_EXE    <=    ALUop_ID;
-        RegDst_ID_EXE   <=   RegDst_ID;
-        RegWrite_ID_EXE <= RegWrite_ID;
-        MemWrite_ID_EXE <= MemWrite_ID;
-        ALUSrcA_ID_EXE  <=  ALUSrcA_ID;
-        ALUSrcB_ID_EXE  <=  ALUSrcB_ID;
-        // data transfering to EXE stage
-        Rt_ID_EXE        <= rt;
-        Rd_ID_EXE        <= rd;
-        Sa_ID_EXE        <=          Sa_ID;
-        PC_ID_EXE        <=       PC_IF_ID;
-        PC_add_4_ID_EXE  <= PC_add_4_IF_ID;
-        RegRdata1_ID_EXE <=   RegRdata1_ID;
-        RegRdata2_ID_EXE <=   RegRdata2_ID;
-        SgnExtend_ID_EXE <=   SgnExtend_ID;
-          ZExtend_ID_EXE <=     ZExtend_ID;
+        if (~ID_EXE_Stall) begin
+            // control signals passing to EXE stage
+               MemEn_ID_EXE <=             MemEn_ID;
+            MemToReg_ID_EXE <=          MemToReg_ID;
+               ALUop_ID_EXE <=             ALUop_ID;
+            RegWrite_ID_EXE <=          RegWrite_ID;
+            MemWrite_ID_EXE <=          MemWrite_ID;
+             ALUSrcA_ID_EXE <=           ALUSrcA_ID;
+             ALUSrcB_ID_EXE <=           ALUSrcB_ID;
+            RegWaddr_ID_EXE <=          RegWaddr_ID;
+                  Sa_ID_EXE <=                Sa_ID;
+                  PC_ID_EXE <=             PC_IF_ID;
+            PC_add_4_ID_EXE <=       PC_add_4_IF_ID;
+           RegRdata1_ID_EXE <=   RegRdata1_Final_ID;
+           RegRdata2_ID_EXE <=   RegRdata2_Final_ID;
+           SgnExtend_ID_EXE <=         SgnExtend_ID;
+             ZExtend_ID_EXE <=           ZExtend_ID;
+        end
+        else begin
+          {MemEn_ID_EXE, MemToReg_ID_EXE, ALUop_ID_EXE, RegWrite_ID_EXE,
+           MemWrite_ID_EXE, ALUSrcA_ID_EXE, ALUSrcB_ID_EXE,RegWaddr_ID_EXE,
+           Sa_ID_EXE, PC_ID_EXE, PC_add_4_ID_EXE, RegRdata1_ID_EXE,
+           RegRdata2_ID_EXE, SgnExtend_ID_EXE, ZExtend_ID_EXE} <= 'd0;
+        end
     end
 
     Zero_Cal Branch_Determination(
-        .A         (     RegRdata1_ID),
-        .B         (     RegRdata2_ID),
-        .Result    (          Zero_ID)
+        .A         (     RegRdata1_Final_ID),
+        .B         (     RegRdata2_Final_ID),
+        .Result    (                Zero_ID)
     );
     Control_Unit Control(
         .rst       (              rst),
@@ -169,7 +191,30 @@ module decode_stage(
         .ALUSrcA   (       ALUSrcA_ID),
         .ALUSrcB   (       ALUSrcB_ID),
         .is_rs_read(    is_rs_read_ID),
-        .is_rt_Read(    is_rt_read_ID)
+        .is_rt_read(    is_rt_read_ID)
+    );
+    MUX_4_32 RegRdata1_MUX(
+        .Src1      (      RegRdata1_ID),
+        .Src2      (     ALUResult_EXE),
+        .Src3      (     ALUResult_MEM),
+        .Src4      (       RegWdata_WB),
+        .op        (     RegRdata1_src),
+        .Result    (RegRdata1_Final_ID)
+    );
+    MUX_4_32 RegRdata2_MUX(
+        .Src1      (      RegRdata2_ID),
+        .Src2      (     ALUResult_EXE),
+        .Src3      (     ALUResult_MEM),
+        .Src4      (       RegWdata_WB),
+        .op        (     RegRdata2_src),
+        .Result    (RegRdata2_Final_ID)
+    );
+    MUX_3_5 RegWaddr_MUX(
+        .Src1   (           rt),
+        .Src2   (           rd),
+        .Src3   (     5'b11111),
+        .op     (    RegDst_ID),
+        .Result (  RegWaddr_ID)
     );
 endmodule //decode_stage
 

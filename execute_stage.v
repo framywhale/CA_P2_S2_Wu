@@ -44,12 +44,10 @@ module execute_stage(
     input  wire [31:0]         Sa_ID_EXE,
     input  wire [31:0]  SgnExtend_ID_EXE,
     input  wire [31:0]    ZExtend_ID_EXE,
-    input  wire [ 4:0]         Rt_ID_EXE,
-    input  wire [ 4:0]         Rd_ID_EXE,
+    input  wire [31:0]   RegWaddr_ID_EXE,
     // control signals passing from ID stage
     input  wire             MemEn_ID_EXE,
     input  wire          MemToReg_ID_EXE,
-    input  wire [ 1:0]     RegDst_ID_EXE,
     input  wire [ 1:0]    ALUSrcA_ID_EXE,
     input  wire [ 1:0]    ALUSrcB_ID_EXE,
     input  wire [ 3:0]      ALUop_ID_EXE,
@@ -64,24 +62,35 @@ module execute_stage(
     output reg  [ 4:0]  RegWaddr_EXE_MEM,
     output reg  [31:0] ALUResult_EXE_MEM,
     output reg  [31:0]  MemWdata_EXE_MEM,
-    output reg  [31:0]        PC_EXE_MEM
+    output reg  [31:0]        PC_EXE_MEM,
+    // pass to Bypass Unit
+    output wire [31:0]  ALUResult_EXE
 );
 
     wire        ACarryOut,AOverflow,AZero;
-    wire [31:0] ALUA,ALUB,ALUResult_EXE;
+    wire [31:0] ALUA,ALUB;
     wire [ 4:0] RegWaddr_EXE;
 
+    assign RegWaddr_EXE = RegWaddr_ID_EXE;
+
     always @(posedge clk) begin
-        // control signals passing to MEM stage
-        MemEn_EXE_MEM     <= MemEn_ID_EXE;
-        MemToReg_EXE_MEM  <= MemToReg_ID_EXE;
-        MemWrite_EXE_MEM  <= MemWrite_ID_EXE;
-        RegWrite_EXE_MEM  <= RegWrite_ID_EXE;
-        // data passing to MEM stage
-        RegWaddr_EXE_MEM  <= RegWaddr_EXE;
-        ALUResult_EXE_MEM <= ALUResult_EXE;
-        MemWdata_EXE_MEM  <= RegRdata2_ID_EXE;
-        PC_EXE_MEM        <= PC_ID_EXE;
+        if (~rst) begin
+            // control signals passing to MEM stage
+            MemEn_EXE_MEM     <= MemEn_ID_EXE;
+            MemToReg_EXE_MEM  <= MemToReg_ID_EXE;
+            MemWrite_EXE_MEM  <= MemWrite_ID_EXE;
+            RegWrite_EXE_MEM  <= RegWrite_ID_EXE;
+            // data passing to MEM stage
+            RegWaddr_EXE_MEM  <= RegWaddr_EXE;
+            ALUResult_EXE_MEM <= ALUResult_EXE;
+            MemWdata_EXE_MEM  <= RegRdata2_ID_EXE;
+            PC_EXE_MEM        <= PC_ID_EXE;
+        end
+        else begin
+            {MemEn_EXE_MEM, MemToReg_EXE_MEM, MemWrite_EXE_MEM,
+             RegWrite_EXE_MEM, RegWaddr_EXE_MEM, ALUResult_EXE_MEM,
+             MemWdata_EXE_MEM, PC_EXE_MEM} <= 'd0;
+        end
     end
 
     MUX_4_32 ALUA_MUX(
@@ -99,13 +108,6 @@ module execute_stage(
         .Src4   (  ZExtend_ID_EXE),
         .op     (  ALUSrcB_ID_EXE),
         .Result (            ALUB)
-    );
-    MUX_3_5 RegWaddr_MUX(
-        .Src1   (       Rt_ID_EXE),
-        .Src2   (       Rd_ID_EXE),
-        .Src3   (        5'b11111),
-        .op     (   RegDst_ID_EXE),
-        .Result (    RegWaddr_EXE)
     );
     ALU ALU(
          .A        (         ALUA),
@@ -130,7 +132,7 @@ module MUX_3_5(
 );
     wire [4:0] and1, and2, and3, op1, op1x, op0, op0x;
 
-	assign op1  = {5{ op[1]}};
+  assign op1  = {5{ op[1]}};
     assign op1x = {5{~op[1]}};
     assign op0  = {5{ op[0]}};
     assign op0x = {5{~op[0]}};
