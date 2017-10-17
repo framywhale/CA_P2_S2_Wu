@@ -129,7 +129,7 @@ nextpc_gen nextpc_gen(
     .rst               (               rst), // I  1
     .JSrc              (              JSrc), // I  1
     .PCSrc             (             PCSrc), // I  2
-//    .inst_addr         (          PC_next), // I 32
+    .PCWrite           (           PCWrite), // I  1
     .JR_target         (      JR_target_ID), // I 32
     .J_target          (       J_target_ID), // I 32
     .Br_addr           (      Br_target_ID), // I 32
@@ -181,7 +181,9 @@ decode_stage de_stage(
     .RegRdata2_ID_EXE  ( RegRdata2_ID_EXE), // O 32
     .Sa_ID_EXE         (        Sa_ID_EXE), // O 32
     .SgnExtend_ID_EXE  ( SgnExtend_ID_EXE), // O 32
-    .ZExtend_ID_EXE    (   ZExtend_ID_EXE)  // O 32
+    .ZExtend_ID_EXE    (   ZExtend_ID_EXE), // O 32
+    .is_rs_read_ID     (    is_rs_read_ID),
+    .is_rt_read_ID     (    is_rt_read_ID)
   );
 
 
@@ -266,6 +268,36 @@ reg_file RegFile(
     .wdata             (      RegWdata_WB), // I 32
     .rdata1            (        RegRdata1), // O 32
     .rdata2            (        RegRdata2)  // O 32
+);
+
+bypass_unit Bypass_Unit(
+    .clk                (              clk),
+    .rst                (              rst),
+    // input IR recognize signals from Control Unit
+    .is_rs_read         (       is_rs_read),
+    .is_rt_read         (       is_rt_read),
+    // Judge whether the instruction is LW
+    .MemToReg_ID_EXE    (  MemToReg_ID_EXE),
+    .MemToReg_EXE_MEM   ( MemToReg_EXE_MEM),
+    .MemToReg_MEM_WB    (  MemToReg_MEM_WB),
+    // Reg Write address in afterward stage
+    .RegWaddr_EXE_MEM   ( RegWaddr_EXE_MEM),
+    .RegWaddr_MEM_WB    (  RegWaddr_MEM_WB),
+    .RegWaddr_ID_EXE    (  RegWaddr_ID_EXE),
+    // Reg read address in ID stage
+    .rs_ID              (Inst_IF_ID[25:21]),
+    .rt_ID              (Inst_IF_ID[20:16]),
+    // Reg write data in afterward stage
+    .ALUResult_EXE      (    ALUResult_EXE),
+    .ALUResult_EXE_MEM  (ALUResult_EXE_MEM),
+    .RegWdata_WB        (      RegWdata_WB),
+    // output the stall signals
+    .PCWrite            (          PCWrite),
+    .IRWrite            (          IRWrite),
+    .ID_EXE_Stall       (     ID_EXE_Stall),
+    // output the real read data in ID stage
+    .RegRdata1_src      (    RegRdata1_src),
+    .RegRdata2_src      (    RegRdata2_src)
 );
 
 `ifdef SIMU_DEBUG

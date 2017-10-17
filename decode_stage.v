@@ -62,6 +62,8 @@ module decode_stage(
     output reg  [ 3:0]  MemWrite_ID_EXE,
     output reg             MemEn_ID_EXE,
     output reg          MemToReg_ID_EXE,
+    output wire           is_rs_read_ID,
+    output wire           is_rt_read_ID,
     // data transfering to EXE stage
     output reg  [ 4:0]        Rt_ID_EXE,
     output reg  [ 4:0]        Rd_ID_EXE,
@@ -165,7 +167,9 @@ module decode_stage(
         .RegWrite  (      RegWrite_ID),
         .MemWrite  (      MemWrite_ID),
         .ALUSrcA   (       ALUSrcA_ID),
-        .ALUSrcB   (       ALUSrcB_ID)
+        .ALUSrcB   (       ALUSrcB_ID),
+        .is_rs_read(    is_rs_read_ID),
+        .is_rt_Read(    is_rt_read_ID)
     );
 endmodule //decode_stage
 

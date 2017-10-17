@@ -267,7 +267,7 @@ module ALU(
                 {Overflow,CarryOut,Zero,C,d,t,z,BF,temp,D,T} = 'd0;
                 end
     SRA    :    begin
-                Result = B >>> A;
+                Result = $signed(B) >>> A[4:0];
                 {Overflow,CarryOut,Zero,C,d,t,z,BF,temp,D,T} = 'd0;
                 end
     SRL    :    begin

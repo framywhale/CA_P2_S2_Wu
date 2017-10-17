@@ -6,13 +6,15 @@ module Control_Unit(
     output wire       MemEn,
     output wire       JSrc,
     output wire       MemToReg,
-    output wire [3:0] ALUop,
+    output wire       is_rs_read,
+    output wire       is_rt_read,
     output wire [1:0] PCSrc,
     output wire [1:0] RegDst,
-    output wire [3:0] RegWrite,
-    output wire [3:0] MemWrite,
     output wire [1:0] ALUSrcA,
-    output wire [1:0] ALUSrcB
+    output wire [1:0] ALUSrcB，
+    output wire [3:0] ALUop,
+    output wire [3:0] RegWrite,
+    output wire [3:0] MemWrite
     );
 ///////////////////////////////////////////////////////
 //              Instruction compare                  //
