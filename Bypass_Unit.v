@@ -97,7 +97,7 @@ module Bypass_Unit(
                           (Haz_ID_MEM_rt ? 2'b10 :
                           (Haz_ID_WB_rt  ? 2'b11 : 2'b00));
 
-    assign ID_EXE_Stall = ((Haz_ID_EXE_rt |  Haz_ID_EXE_rs) & MemToReg_ID_EXE)
+    assign ID_EXE_Stall = (( Haz_ID_EXE_rt |  Haz_ID_EXE_rs) & MemToReg_ID_EXE)
                         | (((Haz_ID_MEM_rt & ~Haz_ID_EXE_rt)
                         |   (Haz_ID_MEM_rs & ~Haz_ID_EXE_rs))
                         &    MemToReg_EXE_MEM);
